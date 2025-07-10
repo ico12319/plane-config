@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: log-config-map
+
+data:
+  APP_LOG_LEVEL: "info"
+  APP_LOG_FORMAT: "json"

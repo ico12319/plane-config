@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rest-config-map
+
+data:
+  TODO_REST_API_URL: "http://rest-api:3434"
