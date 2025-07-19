@@ -1,0 +1,27 @@
+deployment:
+  nodePort:
+    name: rest-api
+    port: 30001
+  replicaCount: 3
+  image:
+    name: hristo12319/todo_rest_api
+    pullPolicy: IfNotPresent
+
+  pods:
+    name: todo-rest-api-pod
+    metadata:
+      labels:
+        app: todo-rest-api-pod
+        kind: backend
+
+  secrets:
+    dbSecrets: "db-secrets"
+    oauthSecrets: "oauth-secrets"
+    jwtSecret: "jwt-secret"
+
+  configMaps:
+    log: "log-config-map"
+    rest: "rest-config-map"
+    db: "db-config-map"
+
+

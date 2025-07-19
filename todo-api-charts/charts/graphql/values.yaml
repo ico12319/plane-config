@@ -1,0 +1,33 @@
+deployment:
+  nodePort: 30008
+  replicaCount: 3
+  pods:
+    metadata:
+      name: todo-graphql-api
+      labels:
+        app: todo-graphql-api
+        kind: backend
+  image:
+    name: hristo12319/todo_graphql_api
+    imagePullPolicy: IfNotPresent
+
+  containers:
+    name: todo-graphql-api-container
+
+  initContainers:
+    name: rest-api-waiter-container
+
+  initContainerImage:
+    name: curlimages/curl:8.8.0
+    imagePullPolicy: IfNotPresent
+
+  secrets:
+    dbSecrets: "db-secrets"
+    oauthSecrets: "oauth-secrets"
+    jwtSecret: "jwt-secret"
+
+  configMaps:
+    log: "log-config-map"
+    rest: "rest-config-map"
+    db: "db-config-map"
+

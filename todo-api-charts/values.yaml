@@ -1,0 +1,23 @@
+global:
+  rest:
+    service:
+      port: 3434
+      url: http://rest-api:3434
+      probes:
+        - name: readinessProbe
+          url: /api/readyz
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          failureThreshold: 3
+        - name: livenessProbe
+          url: /api/healthz
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          failureThreshold: 3
+  graphql:
+    service:
+      port: 8090
+  postgres:
+    service:
+      name: mydatabase
+      port: 5432

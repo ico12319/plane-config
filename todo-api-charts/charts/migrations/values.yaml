@@ -1,0 +1,24 @@
+migrations:
+  name: migration-job
+  backoffLimit: 4
+
+  pods:
+    name: migration-pod
+    restartPolicy: Never
+
+  image:
+    name: hristo12319/todo_api_migrations
+    imagePullPolicy: IfNotPresent
+
+  containers:
+    name: migration-container
+
+  secrets:
+    dbSecrets: "db-secrets"
+    oauthSecrets: "oauth-secrets"
+    jwtSecret: "jwt-secret"
+
+  configMaps:
+    log: "log-config-map"
+    rest: "rest-config-map"
+    db: "db-config-map"

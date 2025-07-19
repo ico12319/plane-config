@@ -1,0 +1,54 @@
+{{ $port := .Values.global.rest.service.port }}
+
+{{ $probes := .Values.global.rest.service.probes }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rest.fullname" . }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      {{ include "rest-pod-labels" . | nindent 6 }}
+  template:
+    metadata:
+      name: {{ .Chart.Name}}
+      labels:
+        {{ include "rest-pod-labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.deployment.image.name }}
+          ports:
+            - containerPort: {{ $port }}
+          readinessProbe:
+            httpGet:
+              port: {{ $port }}
+              path: {{ (index $probes 0).url }}
+            initialDelaySeconds:  {{ (index $probes 0).initialDelaySeconds }}
+            periodSeconds:  {{ (index $probes 0).periodSeconds }}
+            failureThreshold:  {{ (index $probes 0).failureThreshold }}
+          livenessProbe:
+            httpGet:
+              port: {{$port}}
+              path: {{ (index $probes 1).url }}
+            initialDelaySeconds: {{ (index $probes 1).initialDelaySeconds }}
+            periodSeconds:  {{ (index $probes 1).periodSeconds }}
+            failureThreshold:  {{ (index $probes 1).failureThreshold }}
+
+          envFrom:
+            - secretRef:
+                name: {{ .Values.deployment.secrets.dbSecrets }}
+            - secretRef:
+                name: {{ .Values.deployment.secrets.oauthSecrets }}
+            - secretRef:
+                name: {{ .Values.deployment.secrets.jwtSecret }}
+            - configMapRef:
+                name: {{ .Values.deployment.configMaps.log }}
+            - configMapRef:
+                name: {{ .Values.deployment.configMaps.rest }}
+            - configMapRef:
+                name: {{ .Values.deployment.configMaps.db }}

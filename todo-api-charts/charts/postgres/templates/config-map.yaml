@@ -4,4 +4,4 @@ metadata:
   name: db-config-map
 
 data:
-  POSTGRES_DB: "mydatabase"
+  POSTGRES_DB: "{{ .Values.global.postgres.service.name }}"

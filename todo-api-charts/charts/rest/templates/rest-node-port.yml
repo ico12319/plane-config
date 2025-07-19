@@ -1,0 +1,17 @@
+{{- $port := .Values.global.rest.service.port }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.deployment.nodePort.name }}
+
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{ $port }}
+      targetPort: {{ $port }}
+      nodePort: {{ .Values.deployment.nodePort.port }}
+  selector:
+    {{ include "rest-pod-labels" . | nindent 4 }}

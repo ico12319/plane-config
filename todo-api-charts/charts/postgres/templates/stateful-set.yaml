@@ -1,0 +1,59 @@
+{{ $probes := .Values.statefulSet.probes }}
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "postgres.fullname" . }}
+
+spec:
+  serviceName: {{ .Values.statefulSet.headlessServiceName }}
+  selector:
+    matchLabels:
+      {{ include "postgres-pod-labels" . | nindent 6 }}
+  template:
+    metadata:
+      name: {{ .Chart.Name }}
+      labels:
+        {{ include "postgres-pod-labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.statefulSet.image.name }}
+          imagePullPolicy: {{ .Values.statefulSet.image.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.global.postgres.service.port }}
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+            initialDelaySeconds: {{ (index $probes 0).initialDelaySeconds }}
+            periodSeconds: {{ (index $probes 0).periodSeconds }}
+            failureThreshold: {{ (index $probes 0).failureThreshold }}
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+            initialDelaySeconds: {{ (index $probes 1).initialDelaySeconds }}
+            periodSeconds: {{ (index $probes 1).periodSeconds }}
+            failureThreshold: {{ (index $probes 1).failureThreshold }}
+          volumeMounts:
+            - mountPath: {{ .Values.statefulSet.pvc.volumeMountPath }}
+              name: {{ .Values.statefulSet.pvc.name }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.statefulSet.configMaps.dbConfigMap }}
+            - secretRef:
+                name: {{ .Values.statefulSet.secrets.dbSecrets }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Values.statefulSet.pvc.name }}
+      spec:
+        accessModes:
+          - {{ .Values.statefulSet.pvc.requestedAccessModes }}
+        resources:
+          requests:
+            storage: {{ .Values.statefulSet.pv.postgresVolumeStorage }}

@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "migrations.fullname" . }}
+spec:
+  backoffLimit: {{ .Values.migrations.backoffLimit }}
+  template:
+    metadata:
+      name: {{ .Chart.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.migrations.image.name }}
+          imagePullPolicy: {{ .Values.migrations.image.imagePullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.migrations.configMaps.db }}
+            - secretRef:
+                name: {{ .Values.migrations.secrets.dbSecrets }}
+
+      restartPolicy: {{ .Values.migrations.pods.restartPolicy }}

@@ -1,0 +1,49 @@
+statefulSet:
+  secrets:
+    dbSecrets: "db-secrets"
+
+  configMaps:
+    dbConfigMap: "db-config-map"
+
+  image:
+    name: postgres:latest
+    imagePullPolicy: IfNotPresent
+
+  headlessServiceName: db-headless
+
+  pods:
+    metadata:
+      name: db-pod
+      labels:
+        app: db
+
+  containers:
+    name: db-container
+
+  probes:
+    - name: readinessProbe
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 10
+    - name: livenessProbe
+      initialDelaySeconds: 15
+      periodSeconds: 5
+      failureThreshold: 10
+
+  clusterIpService:
+    clusterIpName: db
+    servicePort: 5432
+
+  pv:
+    name: db-pv
+    postgresVolumeStorage: 10Gi
+    postgresVolumeMode: Filesystem
+    volumeAccessModes: ReadWriteOnce
+    volumeHostPath: /postgres/data
+    volumeReclaimPolicy: Retain
+
+  pvc:
+    name: postgresdata
+    requestedStorage: 10Gi
+    requestedAccessModes: ReadWriteOnce
+    volumeMountPath: /var/lib/postgresql/data

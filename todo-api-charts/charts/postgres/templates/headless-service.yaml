@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.statefulSet.headlessServiceName }}
+
+spec:
+  clusterIP: None
+  selector:
+    {{- include "postgres-pod-labels" . | nindent 4 }}
+  ports:
+    - port: {{ .Values.global.postgres.service.port }}

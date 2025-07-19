@@ -4,4 +4,4 @@ metadata:
   name: rest-config-map
 
 data:
-  TODO_REST_API_URL: "http://rest-api:3434"
+  TODO_REST_API_URL: "{{.Values.global.rest.service.url}}"

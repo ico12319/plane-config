@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.statefulSet.pv.name }}
+
+spec:
+  capacity:
+    storage: {{ .Values.statefulSet.pv.postgresVolumeStorage }}
+  volumeMode: {{ .Values.statefulSet.pv.postgresVolumeMode }}
+  accessModes:
+    - {{ .Values.statefulSet.pv.volumeAccessModes }}
+  persistentVolumeReclaimPolicy: {{ .Values.statefulSet.pv.volumeReclaimPolicy }}
+  hostPath:
+    path: {{ .Values.statefulSet.pv.volumeHostPath }}

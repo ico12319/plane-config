@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "grapqhl.fullname" . }}
+
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      {{ include "graphql-pod-labels" . | nindent 6 }}
+  template:
+    metadata:
+      name: {{ .Chart.Name }}
+      labels:
+       {{ include "graphql-pod-labels" . | nindent 8 }}
+    spec:
+      initContainers:
+        - name: {{ .Values.deployment.initContainers.name }}
+          image: {{ .Values.deployment.initContainerImage.name }}
+          imagePullPolicy: {{ .Values.deployment.initContainerImage.imagePullPolicy }}
+          command: ["sh", "-c"]
+          args:
+            - |
+              set -e
+              until curl -sf http://rest-api:3434/api/healthz ; do
+                sleep 2
+              done
+              until curl -sf http://rest-api:3434/api/readyz ; do
+                sleep 2
+              done
+              echo "Todo Rest Api is ready"
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.deployment.image.name }}
+          imagePullPolicy: {{ .Values.deployment.image.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.global.graphql.service.port }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.deployment.secrets.dbSecrets }}
+            - secretRef:
+                name: {{ .Values.deployment.secrets.oauthSecrets }}
+            - secretRef:
+                name: {{ .Values.deployment.secrets.jwtSecret }}
+            - configMapRef:
+                name: {{ .Values.deployment.configMaps.log }}
+            - configMapRef:
+                name: {{ .Values.deployment.configMaps.rest }}
+            - configMapRef:
+                name: {{ .Values.deployment.configMaps.db }}
