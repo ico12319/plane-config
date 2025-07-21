@@ -14,6 +14,18 @@ deployment:
         app: todo-rest-api-pod
         kind: backend
 
+  probes:
+    - name: readinessProbe
+      url: /api/readyz
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      failureThreshold: 3
+    - name: livenessProbe
+      url: /api/healthz
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      failureThreshold: 3
+
   secrets:
     dbSecrets: "db-secrets"
     oauthSecrets: "oauth-secrets"
@@ -23,5 +35,6 @@ deployment:
     log: "log-config-map"
     rest: "rest-config-map"
     db: "db-config-map"
+    activities: "activity-config-map"
 
 

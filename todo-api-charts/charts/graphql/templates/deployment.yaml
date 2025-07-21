@@ -48,3 +48,5 @@ spec:
                 name: {{ .Values.deployment.configMaps.rest }}
             - configMapRef:
                 name: {{ .Values.deployment.configMaps.db }}
+            - configMapRef:
+                name: {{ .Values.deployment.configMaps.activities }}

@@ -1,6 +1,6 @@
 {{ $port := .Values.global.rest.service.port }}
 
-{{ $probes := .Values.global.rest.service.probes }}
+{{ $probes := .Values.deployment.probes }}
 
 apiVersion: apps/v1
 kind: Deployment
@@ -52,3 +52,5 @@ spec:
                 name: {{ .Values.deployment.configMaps.rest }}
             - configMapRef:
                 name: {{ .Values.deployment.configMaps.db }}
+            - configMapRef:
+                name: {{ .Values.deployment.configMaps.activities }}

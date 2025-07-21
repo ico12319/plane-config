@@ -30,4 +30,5 @@ deployment:
     log: "log-config-map"
     rest: "rest-config-map"
     db: "db-config-map"
+    activities: "activity-config-map"
 

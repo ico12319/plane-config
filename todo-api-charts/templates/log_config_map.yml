@@ -4,5 +4,5 @@ metadata:
   name: log-config-map
 
 data:
-  APP_LOG_LEVEL: "info"
-  APP_LOG_FORMAT: "json"
+  APP_LOG_LEVEL: "{{ .Values.global.log.appLogLevel }}"
+  APP_LOG_FORMAT: "{{ .Values.global.log.appLogFormat }}"
