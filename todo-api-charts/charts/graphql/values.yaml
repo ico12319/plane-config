@@ -1,5 +1,7 @@
 deployment:
-  nodePort: 30008
+  nodePort:
+    port: 30008
+    name: graphql-service
   replicaCount: 3
   pods:
     metadata:
@@ -8,7 +10,7 @@ deployment:
         app: todo-graphql-api
         kind: backend
   image:
-    name: hristo12319/todo_graphql_api
+    name: hristo12319/todo-graphql-api:1.0.4
     imagePullPolicy: IfNotPresent
 
   containers:
@@ -31,4 +33,16 @@ deployment:
     rest: "rest-config-map"
     db: "db-config-map"
     activities: "activity-config-map"
+
+  probes:
+    - name: readinessProbe
+      url: /api/readyz
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      failureThreshold: 4
+    - name: livenessProbe
+      url: /api/healthz
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      failureThreshold: 4
 

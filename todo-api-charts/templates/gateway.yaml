@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: {{ .Values.global.gateway.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    istio: {{ .Values.global.gateway.istio }}
+  servers:
+    - port:
+        number: {{ .Values.global.gateway.port.number }}
+        name: {{ .Values.global.gateway.port.name }}
+        protocol: {{ .Values.global.gateway.port.protocol }}
+      tls:
+        mode: {{ .Values.global.gateway.tls.mode }}
+        credentialName: {{ .Values.global.gateway.tls.credentialName }}
+      hosts:
+          - {{ .Values.global.gateway.hosts.name }}

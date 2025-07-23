@@ -2,7 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: log-config-map
+  namespace: {{ .Release.Namespace }}
 
 data:
-  APP_LOG_LEVEL: "{{ .Values.global.log.appLogLevel }}"
-  APP_LOG_FORMAT: "{{ .Values.global.log.appLogFormat }}"
+  APP_LOG_LEVEL: "{{ .Values.global.logConfigMap.appLogLevel}}"
+  APP_LOG_FORMAT: "{{ .Values.global.logConfigMap.appLogFormat }}"

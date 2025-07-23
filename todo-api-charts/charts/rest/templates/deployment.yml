@@ -6,6 +6,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "rest.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Chart.Name }}
 spec:
@@ -33,7 +34,7 @@ spec:
             failureThreshold:  {{ (index $probes 0).failureThreshold }}
           livenessProbe:
             httpGet:
-              port: {{$port}}
+              port: {{ $port }}
               path: {{ (index $probes 1).url }}
             initialDelaySeconds: {{ (index $probes 1).initialDelaySeconds }}
             periodSeconds:  {{ (index $probes 1).periodSeconds }}

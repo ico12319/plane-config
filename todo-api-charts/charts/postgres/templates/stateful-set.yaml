@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "postgres.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 
 spec:
   serviceName: {{ .Values.statefulSet.headlessServiceName }}

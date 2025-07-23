@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ include "migrations.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   backoffLimit: {{ .Values.migrations.backoffLimit }}
   template:
@@ -17,5 +18,19 @@ spec:
                 name: {{ .Values.migrations.configMaps.db }}
             - secretRef:
                 name: {{ .Values.migrations.secrets.dbSecrets }}
+          command: [ "/bin/sh","-c" ]
+          args:
+            - |
+              rc=0
+                migrate -path /migrations \
+                        -database "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST:-db}:5432/${POSTGRES_DB}?sslmode=disable" up || rc=$?
 
+                if [ "$rc" -eq 0 ]; then
+                  for i in $(seq 1 10); do
+                    curl -sf -XPOST http://127.0.0.1:15020/quitquitquit && break || true
+                    sleep 1
+                  done
+                fi
+
+                exit $rc
       restartPolicy: {{ .Values.migrations.pods.restartPolicy }}

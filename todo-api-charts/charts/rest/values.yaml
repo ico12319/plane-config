@@ -4,7 +4,7 @@ deployment:
     port: 30001
   replicaCount: 3
   image:
-    name: hristo12319/todo_rest_api
+    name: hristo12319/todo-rest-api:1.0.3
     pullPolicy: IfNotPresent
 
   pods:

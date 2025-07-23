@@ -1,8 +1,12 @@
 global:
-  jwt:
-    jwtKeySecret: ZTU4YzQ1YjkwNjBlNTg0NTIzNTBiZjhlMmEyMWI2MGQ=
+  jwtSecrets:
+    jwtKey: ZTU4YzQ1YjkwNjBlNTg0NTIzNTBiZjhlMmEyMWI2MGQ=
 
-  oauth:
+  oauthSecrets:
     clientId: Ov23lir9dNQ9jHS7oTcP
     clientSecret: 6c2504afd07f887af871a3ac02bd556a86e0e0b9
     callbackUrl: http://localhost:30001/auth2/callback
+
+  postgresSecrets:
+    POSTGRES_USER: myuser
+    POSTGRES_PASSWORD: mypassword

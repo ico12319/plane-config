@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: {{ include "rest.fullname" .}}
+  namespace: {{ .Release.Namespace }}
+
+spec:
+  hosts:
+    - {{ .Values.global.gateway.hosts.name }}
+  gateways:
+    - {{ .Values.global.gateway.name }}
+  http:
+    - match:
+        - uri:
+            prefix: "/github/login"
+      route:
+        - destination:
+            host: {{ .Values.deployment.nodePort.name }}
+            port:
+              number: {{ .Values.global.rest.service.port }}

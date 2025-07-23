@@ -1,0 +1,9 @@
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: strict-mtls
+  namespace: {{ .Release.Namespace }}
+
+spec:
+  mtls:
+    mode: {{ .Values.global.mtls.mode }}

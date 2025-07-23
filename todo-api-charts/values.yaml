@@ -14,14 +14,34 @@ global:
       name: mydatabase
       port: 5432
 
-  jwt:
-    jwtKeySecret: dummy jwt secret
+  jwtSecrets:
+    jwtKey: dummy jwt secret
 
-  log:
+  logConfigMap:
     appLogLevel: info
     appLogFormat: json
 
-  oauth:
+  oauthSecrets:
     clientId: dummy clientId
     clientSecret: dummy client secret
     callbackUrl: dummy callback url
+
+  postgresSecrets:
+    POSTGRES_USER: dummy user
+    POSTGRES_PASSWORD: dummy password
+
+  gateway:
+    istio: ingressgateway
+    name: ingress-gateway-configuration
+    tls:
+      mode: MUTUAL
+      credentialName: api-mtls-cred
+    hosts:
+      name: api.local.test
+    port:
+      number: 443
+      protocol: HTTPS
+      name: https-mtls
+
+  mtls:
+    mode: STRICT

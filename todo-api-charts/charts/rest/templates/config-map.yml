@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: rest-config-map
+  namespace: {{ .Release.Namespace }}
 
 data:
   TODO_REST_API_URL: "{{.Values.global.rest.service.url}}"

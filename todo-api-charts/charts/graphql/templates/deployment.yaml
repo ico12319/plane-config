@@ -1,7 +1,11 @@
+{{ $probes := .Values.deployment.probes }}
+{{ $port := .Values.global.graphql.service.port }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "grapqhl.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
@@ -14,24 +18,23 @@ spec:
       labels:
        {{ include "graphql-pod-labels" . | nindent 8 }}
     spec:
-      initContainers:
-        - name: {{ .Values.deployment.initContainers.name }}
-          image: {{ .Values.deployment.initContainerImage.name }}
-          imagePullPolicy: {{ .Values.deployment.initContainerImage.imagePullPolicy }}
-          command: ["sh", "-c"]
-          args:
-            - |
-              set -e
-              until curl -sf http://rest-api:3434/api/healthz ; do
-                sleep 2
-              done
-              until curl -sf http://rest-api:3434/api/readyz ; do
-                sleep 2
-              done
-              echo "Todo Rest Api is ready"
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.deployment.image.name }}
+          readinessProbe:
+            httpGet:
+              port: {{ $port }}
+              path: {{ (index $probes 0).url }}
+            initialDelaySeconds: {{ (index $probes 0).initialDelaySeconds }}
+            periodSeconds: {{ (index $probes 0).periodSeconds }}
+            failureThreshold: {{ (index $probes 0).failureThreshold }}
+          livenessProbe:
+            httpGet:
+              port: {{ $port }}
+              path: {{ (index $probes 1).url }}
+            initialDelaySeconds: {{ (index $probes 1).initialDelaySeconds }}
+            periodSeconds: {{ (index $probes 1).periodSeconds }}
+            failureThreshold: {{ (index $probes 1).failureThreshold }}
           imagePullPolicy: {{ .Values.deployment.image.imagePullPolicy }}
           ports:
             - containerPort: {{ .Values.global.graphql.service.port }}

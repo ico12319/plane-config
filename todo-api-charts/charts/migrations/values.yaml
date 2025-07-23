@@ -4,10 +4,10 @@ migrations:
 
   pods:
     name: migration-pod
-    restartPolicy: Never
+    restartPolicy: OnFailure
 
   image:
-    name: hristo12319/todo_api_migrations
+    name: hristo12319/todo-api-migrations:1.0.2
     imagePullPolicy: IfNotPresent
 
   containers:
